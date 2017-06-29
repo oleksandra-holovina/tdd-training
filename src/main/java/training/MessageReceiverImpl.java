@@ -1,7 +1,7 @@
 package training;
 
-import training.*;
 import training.exceptions.ValidationException;
+import training.interfaces.MessageReceiver;
 
 import java.util.List;
 
