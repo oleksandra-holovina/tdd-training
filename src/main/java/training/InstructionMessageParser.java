@@ -1,5 +1,6 @@
 package training;
 
+import training.enums.MESSAGE_TYPE;
 import training.exceptions.ValidationException;
 
 import java.text.ParseException;
@@ -39,25 +40,18 @@ public class InstructionMessageParser {
 
     private InstructionMessage processStringMessage(String message){
         String[] messageParts = splitMessageBySpaces(message);
-
-        InstructionMessage instructionMessage = null;
-        try{
-            instructionMessage = createInstructionMessage(messageParts);
-        }
-        catch (ValidationException ignored){}
-
-        return instructionMessage;
+        return createInstructionMessage(messageParts);
     }
 
     private InstructionMessage createInstructionMessage(String [] messageParts){
         validateNumberOfParameters(messageParts);
 
         String message = messageParts[MESSAGE_INDEX];
-        String type = messageParts[TYPE_INDEX];
+        MESSAGE_TYPE type = validateMessageType(messageParts[TYPE_INDEX]);
         String code = messageParts[CODE_INDEX];
         int quantity = strToInt(messageParts[QUANTITY_INDEX]);
         int uom = strToInt(messageParts[UOM_INDEX]);
-        Date date = validateTimestamp(messageParts);
+        Date date = validateTimestamp(messageParts[TIMESTAMP_INDEX]);
 
         return new InstructionMessage(message, type, code, quantity, uom, date);
     }
@@ -69,6 +63,28 @@ public class InstructionMessageParser {
         }
     }
 
+    private MESSAGE_TYPE validateMessageType(String typeStr){
+        MESSAGE_TYPE type;
+
+        switch (typeStr){
+            case "A":
+                type = MESSAGE_TYPE.A;
+                break;
+            case "B":
+                type = MESSAGE_TYPE.B;
+                break;
+            case "C":
+                type = MESSAGE_TYPE.C;
+                break;
+            case "D":
+                type = MESSAGE_TYPE.D;
+                break;
+            default: throw new ValidationException("The type is invalid. Available types: A,B,C,D");
+        }
+
+        return type;
+    }
+
     private int strToInt(String number){
         try{
             return Integer.parseInt(number);
@@ -78,9 +94,7 @@ public class InstructionMessageParser {
         }
     }
 
-    private Date validateTimestamp(String[] message) {
-        String timestamp = message[TIMESTAMP_INDEX];
-
+    private Date validateTimestamp(String timestamp) {
         Date date;
         try {
             date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(timestamp);
