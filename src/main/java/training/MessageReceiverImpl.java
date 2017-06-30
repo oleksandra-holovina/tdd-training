@@ -16,14 +16,11 @@ public class MessageReceiverImpl implements MessageReceiver {
     @Override
     public void receive(String text) {
         List<InstructionMessage> messages = parser.parse(text);
-
-        try {
-            validator.validate(messages);
-            enqueueMultipleMessages(messages);
-        }catch (ValidationException ignored){}
+        messages.forEach(this::enqueueIfValid);
     }
 
-    private void enqueueMultipleMessages(List<InstructionMessage> messages){
-        messages.forEach(message -> queue.enqueue(message));
+    private void enqueueIfValid(InstructionMessage message) {
+        validator.validate(message);
+        queue.enqueue(message);
     }
 }
