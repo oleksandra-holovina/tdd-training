@@ -10,9 +10,6 @@ import java.util.Queue;
 public class InstructionQueue {
     private Queue<InstructionMessage> queue = new PriorityQueue<>(typeComparator);
 
-    public static Comparator<InstructionMessage> typeComparator =
-            Comparator.comparing(InstructionMessage::getInstructionType);
-
     public void enqueue(InstructionMessage message) {
         queue.add(message);
     }
@@ -31,5 +28,20 @@ public class InstructionQueue {
 
     public boolean isEmpty() {
         return queue.isEmpty();
+    }
+
+    private static Comparator<InstructionMessage> typeComparator =
+            (message1, message2) -> {
+                int order = findOrderByPriority(message1, message2);
+                return order == 0 ?
+                        message1.getSerialNum() - message2.getSerialNum():
+                        order;
+            };
+
+    private static int findOrderByPriority(InstructionMessage message1, InstructionMessage message2){
+        int priority1 = message1.getInstructionType().getPriority();
+        int priority2 = message2.getInstructionType().getPriority();
+
+        return priority1 - priority2;
     }
 }
