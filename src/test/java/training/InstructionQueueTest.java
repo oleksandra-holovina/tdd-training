@@ -2,7 +2,8 @@ package training;
 
 import org.junit.Before;
 import org.junit.Test;
-import training.enums.MESSAGE_TYPE;
+import training.entities.InstructionMessage;
+import training.entities.MessageType;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,7 +21,7 @@ public class InstructionQueueTest {
     @Before
     public void setUp() throws Exception {
         queue = new InstructionQueue();
-        message = createValidInstructionMessage(MESSAGE_TYPE.B);
+        message = createInstructionMessage(MessageType.B);
     }
 
     @Test
@@ -32,8 +33,7 @@ public class InstructionQueueTest {
     @Test
     public void dequeue() throws Exception {
         queue.enqueue(message);
-        InstructionMessage message = queue.dequeue();
-        assertEquals(0, queue.count());
+        assertEquals(message, queue.dequeue());
     }
 
     @Test
@@ -44,7 +44,7 @@ public class InstructionQueueTest {
 
     @Test
     public void dequeueHigherPriorityFirst() throws Exception {
-        InstructionMessage messageWithLowerPriotity = createValidInstructionMessage(MESSAGE_TYPE.C);
+        InstructionMessage messageWithLowerPriotity = createInstructionMessage(MessageType.C);
         queue.enqueue(message);
         queue.enqueue(messageWithLowerPriotity);
 
@@ -53,7 +53,7 @@ public class InstructionQueueTest {
 
     @Test
     public void dequeueLowerPriorityFirst() throws Exception {
-        InstructionMessage messageWithHigherPriotity = createValidInstructionMessage(MESSAGE_TYPE.A);
+        InstructionMessage messageWithHigherPriotity = createInstructionMessage(MessageType.A);
         queue.enqueue(message);
         queue.enqueue(messageWithHigherPriotity);
 
@@ -62,7 +62,7 @@ public class InstructionQueueTest {
 
     @Test
     public void dequeueEqualPriority() throws Exception {
-        InstructionMessage secondlyAdded = createValidInstructionMessage(message.getInstructionType());
+        InstructionMessage secondlyAdded = createInstructionMessage(message.getInstructionType());
 
         queue.enqueue(message);
         queue.enqueue(secondlyAdded);
@@ -85,7 +85,7 @@ public class InstructionQueueTest {
 
     @Test
     public void peekHigherPriorityFirst() throws Exception {
-        InstructionMessage messageWithLowerPriotity = createValidInstructionMessage(MESSAGE_TYPE.C);
+        InstructionMessage messageWithLowerPriotity = createInstructionMessage(MessageType.C);
         queue.enqueue(message);
         queue.enqueue(messageWithLowerPriotity);
 
@@ -94,7 +94,7 @@ public class InstructionQueueTest {
 
     @Test
     public void peekLowerPriorityFirst() throws Exception {
-        InstructionMessage messageWithHigherPriotity = createValidInstructionMessage(MESSAGE_TYPE.A);
+        InstructionMessage messageWithHigherPriotity = createInstructionMessage(MessageType.A);
         queue.enqueue(message);
         queue.enqueue(messageWithHigherPriotity);
 
@@ -103,7 +103,7 @@ public class InstructionQueueTest {
 
     @Test
     public void peekEqualPriority() throws Exception {
-        InstructionMessage secondlyAdded = createValidInstructionMessage(message.getInstructionType());
+        InstructionMessage secondlyAdded = createInstructionMessage(message.getInstructionType());
 
         queue.enqueue(message);
         queue.enqueue(secondlyAdded);
@@ -119,27 +119,20 @@ public class InstructionQueueTest {
     }
 
     @Test
-    public void isEmpty() throws Exception {
+    public void showIsEmpty() throws Exception {
         assertTrue(queue.isEmpty());
     }
 
     @Test
-    public void isNotEmpty() throws Exception {
+    public void showIsNotEmpty() throws Exception {
         queue.enqueue(message);
         assertFalse(queue.isEmpty());
     }
 
-    private InstructionMessage createValidInstructionMessage(MESSAGE_TYPE type) throws ParseException {
+    private InstructionMessage createInstructionMessage(MessageType type) throws ParseException {
         Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse("2015-03-05T10:04:56.012Z");
         return new InstructionMessage("msg", type, "MZ89", 5678,
                 50, date);
     }
-
-    private InstructionMessage createInvalidInstructionMessage() throws ParseException {
-        Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse("2015-03-05T10:04:56.012Z");
-        return new InstructionMessage("msg", MESSAGE_TYPE.A, "M9", 5678,
-                50, date);
-    }
-
 
 }
