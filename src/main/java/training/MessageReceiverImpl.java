@@ -1,9 +1,9 @@
 package training;
 
-import training.exceptions.ValidationException;
+import training.entities.InstructionMessage;
 import training.interfaces.MessageReceiver;
-
-import java.util.List;
+import training.parsing.InstructionMessageParser;
+import training.validation.InstructionMessageValidator;
 
 /**
  * Created by Oleksandra_Holovina on 6/27/2017.
@@ -15,11 +15,7 @@ public class MessageReceiverImpl implements MessageReceiver {
 
     @Override
     public void receive(String text) {
-        List<InstructionMessage> messages = parser.parse(text);
-        messages.forEach(this::enqueueIfValid);
-    }
-
-    private void enqueueIfValid(InstructionMessage message) {
+        InstructionMessage message = parser.parse(text);
         validator.validate(message);
         queue.enqueue(message);
     }
