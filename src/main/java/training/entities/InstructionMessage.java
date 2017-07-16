@@ -1,19 +1,16 @@
 package training.entities;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-/**
- * Created by Oleksandra_Holovina on 6/27/2017.
- */
 public class InstructionMessage {
     private String instructionMessage;
     private MessageType instructionType;
     private String productCode;
     private int quantity;
     private int UOM;
-    private Date timestamp;
+    private LocalDateTime timestamp;
 
-    public InstructionMessage(String instructionMessage, MessageType instructionType, String productCode, int quantity, int UOM, Date timestamp) {
+    public InstructionMessage(String instructionMessage, MessageType instructionType, String productCode, int quantity, int UOM, LocalDateTime timestamp) {
         this.instructionMessage = instructionMessage;
         this.instructionType = instructionType;
         this.productCode = productCode;
@@ -42,7 +39,7 @@ public class InstructionMessage {
         return UOM;
     }
 
-    public Date getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 }
