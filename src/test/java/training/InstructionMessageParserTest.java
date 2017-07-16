@@ -7,14 +7,21 @@ import org.junit.rules.ExpectedException;
 import training.parsing.InstructionMessageParser;
 import training.parsing.ParsingException;
 
-/**
- * Created by Oleksandra_Holovina on 6/27/2017.
- */
+
 public class InstructionMessageParserTest {
-    private final String INVALID_PARAMS_NUMBER = "Number of arguments should be 6";
-    private final String INVALID_TYPE = "The type is invalid. Available types: A,B,C,D";
-    private final String INVALID_NUMBER = "is not a number";
-    private final String INVALID_TIMESTAMP = "There is an error in timestamp";
+    private static final String DEFAULT_CORRECT_MESSAGE = "InstructionMessage B MZ89 5678 50 2015-03-05T10:04:56.012Z\n";
+
+    private static final String INVALID_MESSAGE_STRUCTURE = "InstructionMessage A MZ89 5678 50\n";
+    private static final String INVALID_MESSAGE_TYPE = "InstructionMessage 5 MZ89 8 50 2015-03-05T10:04:56.012Z\n";
+    private static final String INVALID_MESSAGE_QUANTITY = "InstructionMessage A MZ89 a 50 2015-03-05T10:04:56.012Z\n";
+    private static final String INVALID_MESSAGE_UOM = "InstructionMessage A MZ89 5 a 2015-03-05T10:04:56.012Z\n";;
+    private static final String INVALID_MESSAGE_TIMESTAMP = "InstructionMessage A MZ89 5678 50 2015-03-05\n";
+
+    private final String INVALID_MESSAGE_STRUCTURE_MESSAGE = "The structure should be the following:" +
+            "InstructionMessage type, code, quantity,uom, timestamp separated by space";
+    private final String INVALID_TYPE_MESSAGE = "The type is invalid. Available types: A,B,C,D";
+    private final String INVALID_NUMBER_MESSAGE = "is not a number";
+    private final String INVALID_TIMESTAMP_MESSAGE = "There is an error in timestamp";
 
     private InstructionMessageParser parser;
 
@@ -27,51 +34,45 @@ public class InstructionMessageParserTest {
         parser = new InstructionMessageParser();
     }
 
-
     @Test
-    public void throwExceptionWhenInvalidNumberOfArguments() throws Exception {
-        setException(INVALID_PARAMS_NUMBER);
-
-        String messages = "msg A MZ89 5678 50\n";
-        parser.parse(messages);
+    public void shouldThrowExceptionWhenWhenMessageIsNull(){
+        setException(INVALID_MESSAGE_STRUCTURE_MESSAGE);
+        parser.parse(null);
     }
 
     @Test
-    public void throwExceptionWhenInvalidType() throws Exception {
-        setException(INVALID_TYPE);
-
-        String messages = "msg 5 MZ89 5678 50 2015-03-05T10:04:56.012Z\n";
-        parser.parse(messages);
+    public void shouldThrowExceptionWhenInvalidMessageStructure(){
+        setException(INVALID_MESSAGE_STRUCTURE_MESSAGE);
+        parser.parse(INVALID_MESSAGE_STRUCTURE);
     }
 
     @Test
-    public void throwExceptionWhenInvalidQuantity() throws Exception {
-        setException(INVALID_NUMBER);
-
-        String messages = "msg A MZ89 a 50 2015-03-05T10:04:56.012Z\n";
-        parser.parse(messages);
+    public void shouldThrowExceptionWhenInvalidType() {
+        setException(INVALID_TYPE_MESSAGE);
+        parser.parse(INVALID_MESSAGE_TYPE);
     }
 
     @Test
-    public void throwExceptionWhenInvalidUom() throws Exception {
-        setException(INVALID_NUMBER);
-
-        String messages = "msg A MZ89 5 a 2015-03-05T10:04:56.012Z\n";
-        parser.parse(messages);
+    public void shouldThrowExceptionWhenInvalidQuantity()  {
+        setException(INVALID_NUMBER_MESSAGE);
+        parser.parse(INVALID_MESSAGE_QUANTITY);
     }
 
     @Test
-    public void throwExceptionWhenInvalidTimestamp() throws Exception {
-        setException(INVALID_TIMESTAMP);
-
-        String messages = "msg A MZ89 5678 50 2015-03-05\n";
-        parser.parse(messages);
+    public void shouldThrowExceptionWhenInvalidUom() {
+        setException(INVALID_NUMBER_MESSAGE);
+        parser.parse(INVALID_MESSAGE_UOM);
     }
 
     @Test
-    public void throwExceptionWhenValidMessage() throws Exception {
-        String messages = "msg B MZ89 5678 50 2015-03-05T10:04:56.012Z\n";
-        parser.parse(messages);
+    public void shouldThrowExceptionWhenInvalidTimestamp(){
+        setException(INVALID_TIMESTAMP_MESSAGE);
+        parser.parse(INVALID_MESSAGE_TIMESTAMP);
+    }
+
+    @Test
+    public void shouldThrowNoExceptionWhenValidMessage() {
+        parser.parse(DEFAULT_CORRECT_MESSAGE);
     }
 
     private void setException(String message) {
