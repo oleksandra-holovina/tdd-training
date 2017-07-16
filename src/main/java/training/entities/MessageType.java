@@ -1,10 +1,7 @@
 package training.entities;
 
-/**
- * Created by Oleksandra_Holovina on 6/29/2017.
- */
 public enum MessageType {
-    A(1), B(2), C(3), D(3);
+    A(TypeConstants.HIGH), B(TypeConstants.MEDIUM), C(TypeConstants.LOW), D(TypeConstants.LOW);
 
     private int priority;
 
@@ -14,5 +11,11 @@ public enum MessageType {
 
     public int getPriority() {
         return priority;
+    }
+
+    public static class TypeConstants{
+        private static final int HIGH = 1;
+        private static final int MEDIUM = 2;
+        private static final int LOW = 3;
     }
 }
