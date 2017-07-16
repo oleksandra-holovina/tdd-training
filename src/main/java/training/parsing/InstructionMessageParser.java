@@ -3,60 +3,59 @@ package training.parsing;
 import training.entities.InstructionMessage;
 import training.entities.MessageType;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
-/**
- * Created by Oleksandra_Holovina on 6/27/2017.
- */
 public class InstructionMessageParser {
-    private final int NUMBER_OF_PARAMETERS = 6;
-    private final int MESSAGE_INDEX = 0;
-    private final int TYPE_INDEX = 1;
-    private final int CODE_INDEX = 2;
-    private final int QUANTITY_INDEX  = 3;
-    private final int UOM_INDEX = 4;
-    private final int TIMESTAMP_INDEX = 5;
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    private static final String WORD_DELIMITER_REGEX = "\\s";
 
-    private final String INVALID_PARAMS_NUMBER = "Number of arguments should be 6: message, type, code, quantity,uom, " +
-            "timestamp separated by space";
-    private final String INVALID_TYPE = "The type is invalid. Available types: A,B,C,D";
-    private final String INVALID_NUMBER = " is not a number";
-    private final String INVALID_TIMESTAMP = "There is an error in timestamp";
+    private static final int MESSAGE_INDEX = 0;
+    private static final int TYPE_INDEX = 1;
+    private static final int CODE_INDEX = 2;
+    private static final int QUANTITY_INDEX  = 3;
+    private static final int UOM_INDEX = 4;
+    private static final int TIMESTAMP_INDEX = 5;
+
+    private static final String INVALID_STRUCTURE_MESSAGE = "The structure should be the following:" +
+            "InstructionMessage type, code, quantity,uom, timestamp separated by space";
+    private static final String INVALID_TYPE_MESSAGE = "The type is invalid. Available types: A,B,C,D";
+    private static final String INVALID_NUMBER_MESSAGE = " is not a number";
+    private static final String INVALID_TIMESTAMP_MESSAGE = "There is an error in timestamp";
+
+    private static final String INSTRUCTION_MESSAGE_REGEX = "^InstructionMessage\\s\\S\\s\\S+\\s\\S+\\s\\S+\\s\\S+\\n$";
 
     public InstructionMessage parse(String text){
-        String message = getAllBeforeNewLine(text);
+        parseStructure(text);
 
-        String[] messageParts = splitMessageBySpaces(message);
+        String[] messageParts = splitMessageBySpaces(text);
         return createInstructionMessage(messageParts);
     }
 
-    private InstructionMessage createInstructionMessage(String [] messageParts){
-        validateNumberOfParameters(messageParts);
+    private void parseStructure(String text){
+        if (text == null || !text.matches(INSTRUCTION_MESSAGE_REGEX)){
+            throw new ParsingException(INVALID_STRUCTURE_MESSAGE);
+        }
+    }
 
+    private InstructionMessage createInstructionMessage(String [] messageParts){
         String message = messageParts[MESSAGE_INDEX];
-        MessageType type = validateMessageType(messageParts[TYPE_INDEX]);
+        MessageType type = getMessageType(messageParts[TYPE_INDEX]);
         String code = messageParts[CODE_INDEX];
         int quantity = strToInt(messageParts[QUANTITY_INDEX]);
         int uom = strToInt(messageParts[UOM_INDEX]);
-        Date date = validateTimestamp(messageParts[TIMESTAMP_INDEX]);
+        LocalDateTime date = getTimestamp(messageParts[TIMESTAMP_INDEX]);
 
         return new InstructionMessage(message, type, code, quantity, uom, date);
     }
 
-    private void validateNumberOfParameters(String[] message) {
-        if (message.length != NUMBER_OF_PARAMETERS) {
-            throw new ParsingException(INVALID_PARAMS_NUMBER);
-        }
-    }
-
-    private MessageType validateMessageType(String typeStr){
+    private MessageType getMessageType(String typeStr){
         try {
             return MessageType.valueOf(typeStr);
         }
         catch (IllegalArgumentException e){
-            throw new ParsingException(INVALID_TYPE);
+            throw new ParsingException(INVALID_TYPE_MESSAGE);
         }
     }
 
@@ -65,23 +64,20 @@ public class InstructionMessageParser {
             return Integer.parseInt(number);
         }
         catch (NumberFormatException e){
-            throw new ParsingException(number + INVALID_NUMBER);
+            throw new ParsingException(number + INVALID_NUMBER_MESSAGE);
         }
     }
 
-    private Date validateTimestamp(String timestamp) {
+    private LocalDateTime getTimestamp(String timestamp) {
         try {
-            return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(timestamp);
-        } catch (ParseException e) {
-            throw new ParsingException(INVALID_TIMESTAMP);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern((DATE_TIME_FORMAT));
+            return LocalDateTime.parse(timestamp, formatter);
+        } catch (DateTimeParseException e) {
+            throw new ParsingException(INVALID_TIMESTAMP_MESSAGE);
         }
     }
 
     private String[] splitMessageBySpaces(String message) {
-        return message.split("\\s");
-    }
-
-    private String getAllBeforeNewLine(String message) {
-        return message.split("\\r?\\n")[0];
+        return message.split(WORD_DELIMITER_REGEX);
     }
 }
