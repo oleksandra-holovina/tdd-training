@@ -1,17 +1,20 @@
 package training;
 
 import training.entities.InstructionMessage;
-import training.interfaces.MessageReceiver;
+import training.instruction_queue.InstructionQueue;
 import training.parsing.InstructionMessageParser;
 import training.validation.InstructionMessageValidator;
 
-/**
- * Created by Oleksandra_Holovina on 6/27/2017.
- */
 public class MessageReceiverImpl implements MessageReceiver {
-    private InstructionMessageParser parser = new InstructionMessageParser();
-    private InstructionMessageValidator validator = new InstructionMessageValidator();
-    private InstructionQueue queue = new InstructionQueue();
+    private InstructionMessageParser parser;
+    private InstructionMessageValidator validator;
+    private InstructionQueue queue;
+
+    public MessageReceiverImpl(InstructionMessageParser parser, InstructionMessageValidator validator, InstructionQueue queue) {
+        this.parser = parser;
+        this.validator = validator;
+        this.queue = queue;
+    }
 
     @Override
     public void receive(String text) {
