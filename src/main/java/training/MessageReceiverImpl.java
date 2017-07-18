@@ -1,7 +1,7 @@
 package training;
 
 import training.entities.InstructionMessage;
-import training.instruction_queue.InstructionQueue;
+import training.queue.InstructionQueue;
 import training.parsing.InstructionMessageParser;
 import training.validation.InstructionMessageValidator;
 
