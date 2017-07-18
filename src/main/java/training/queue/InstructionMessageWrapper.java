@@ -1,4 +1,4 @@
-package training.instruction_queue;
+package training.queue;
 
 import training.entities.InstructionMessage;
 
@@ -20,17 +20,20 @@ public class InstructionMessageWrapper implements Comparable<InstructionMessageW
         return message;
     }
 
-    public int getSerialNum() {
-        return serialNum;
-    }
-
     @Override
     public int compareTo(InstructionMessageWrapper messageWrapper) {
 
-        return Comparator.comparing((InstructionMessageWrapper wrapper)->
-                            wrapper.getMessage().getInstructionType().getPriority()).
+        return Comparator.comparing(InstructionMessageWrapper::getPriority).
                 thenComparing(InstructionMessageWrapper::getSerialNum).
                 compare(this, messageWrapper);
+    }
+
+    private int getSerialNum() {
+        return serialNum;
+    }
+
+    private static int getPriority(InstructionMessageWrapper wrapper){
+        return wrapper.getMessage().getInstructionType().getPriority();
     }
 
     private int generateSerialNumber(){
