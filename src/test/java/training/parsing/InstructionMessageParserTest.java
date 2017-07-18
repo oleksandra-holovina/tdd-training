@@ -1,20 +1,27 @@
-package training;
+package training.parsing;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import training.parsing.InstructionMessageParser;
-import training.parsing.ParsingException;
+import training.entities.InstructionMessage;
+import training.entities.MessageType;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import static org.junit.Assert.assertEquals;
 
 
 public class InstructionMessageParserTest {
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
     private static final String DEFAULT_CORRECT_MESSAGE = "InstructionMessage B MZ89 5678 50 2015-03-05T10:04:56.012Z\n";
 
     private static final String INVALID_MESSAGE_STRUCTURE = "InstructionMessage A MZ89 5678 50\n";
     private static final String INVALID_MESSAGE_TYPE = "InstructionMessage 5 MZ89 8 50 2015-03-05T10:04:56.012Z\n";
     private static final String INVALID_MESSAGE_QUANTITY = "InstructionMessage A MZ89 a 50 2015-03-05T10:04:56.012Z\n";
-    private static final String INVALID_MESSAGE_UOM = "InstructionMessage A MZ89 5 a 2015-03-05T10:04:56.012Z\n";;
+    private static final String INVALID_MESSAGE_UOM = "InstructionMessage A MZ89 5 a 2015-03-05T10:04:56.012Z\n";
     private static final String INVALID_MESSAGE_TIMESTAMP = "InstructionMessage A MZ89 5678 50 2015-03-05\n";
 
     private final String INVALID_MESSAGE_STRUCTURE_MESSAGE = "The structure should be the following:" +
@@ -35,7 +42,7 @@ public class InstructionMessageParserTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenWhenMessageIsNull(){
+    public void shouldThrowExceptionWhenMessageIsNull(){
         setException(INVALID_MESSAGE_STRUCTURE_MESSAGE);
         parser.parse(null);
     }
@@ -71,12 +78,26 @@ public class InstructionMessageParserTest {
     }
 
     @Test
-    public void shouldThrowNoExceptionWhenValidMessage() {
-        parser.parse(DEFAULT_CORRECT_MESSAGE);
+    public void shouldReturnCorrectData() {
+        InstructionMessage message = parser.parse(DEFAULT_CORRECT_MESSAGE);
+
+        assertEquals(message.getInstructionType(), MessageType.B);
+        assertEquals(message.getProductCode(), "MZ89");
+        assertEquals(message.getQuantity(), 5678);
+        assertEquals(message.getUOM(), 50);
+
+        LocalDateTime dateTime = getLocalDateTimeFromString("2015-03-05T10:04:56.012Z");
+        assertEquals(message.getTimestamp(), dateTime);
+
     }
 
     private void setException(String message) {
         exception.expect(ParsingException.class);
         exception.expectMessage(message);
+    }
+
+    private LocalDateTime getLocalDateTimeFromString(String timestamp){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+        return LocalDateTime.parse(timestamp, formatter);
     }
 }
