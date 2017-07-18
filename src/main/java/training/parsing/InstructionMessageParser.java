@@ -11,7 +11,6 @@ public class InstructionMessageParser {
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     private static final String WORD_DELIMITER_REGEX = "\\s";
 
-    private static final int MESSAGE_INDEX = 0;
     private static final int TYPE_INDEX = 1;
     private static final int CODE_INDEX = 2;
     private static final int QUANTITY_INDEX  = 3;
@@ -24,30 +23,29 @@ public class InstructionMessageParser {
     private static final String INVALID_NUMBER_MESSAGE = " is not a number";
     private static final String INVALID_TIMESTAMP_MESSAGE = "There is an error in timestamp";
 
-    private static final String INSTRUCTION_MESSAGE_REGEX = "^InstructionMessage\\s\\S\\s\\S+\\s\\S+\\s\\S+\\s\\S+\\n$";
+    private static final String INSTRUCTION_MESSAGE_REGEX = "^InstructionMessage \\S \\S+ \\S+ \\S+ \\S+\\n$";
 
     public InstructionMessage parse(String text){
-        parseStructure(text);
+        validateStructure(text);
 
-        String[] messageParts = splitMessageBySpaces(text);
+        String[] messageParts = splitMessageByDelimiter(text);
         return createInstructionMessage(messageParts);
     }
 
-    private void parseStructure(String text){
+    private void validateStructure(String text){
         if (text == null || !text.matches(INSTRUCTION_MESSAGE_REGEX)){
             throw new ParsingException(INVALID_STRUCTURE_MESSAGE);
         }
     }
 
     private InstructionMessage createInstructionMessage(String [] messageParts){
-        String message = messageParts[MESSAGE_INDEX];
         MessageType type = getMessageType(messageParts[TYPE_INDEX]);
         String code = messageParts[CODE_INDEX];
-        int quantity = strToInt(messageParts[QUANTITY_INDEX]);
-        int uom = strToInt(messageParts[UOM_INDEX]);
+        int quantity = convertStringToInteger(messageParts[QUANTITY_INDEX]);
+        int uom = convertStringToInteger(messageParts[UOM_INDEX]);
         LocalDateTime date = getTimestamp(messageParts[TIMESTAMP_INDEX]);
 
-        return new InstructionMessage(message, type, code, quantity, uom, date);
+        return new InstructionMessage(type, code, quantity, uom, date);
     }
 
     private MessageType getMessageType(String typeStr){
@@ -59,7 +57,7 @@ public class InstructionMessageParser {
         }
     }
 
-    private int strToInt(String number){
+    private int convertStringToInteger(String number){
         try{
             return Integer.parseInt(number);
         }
@@ -77,7 +75,7 @@ public class InstructionMessageParser {
         }
     }
 
-    private String[] splitMessageBySpaces(String message) {
+    private String[] splitMessageByDelimiter(String message) {
         return message.split(WORD_DELIMITER_REGEX);
     }
 }
