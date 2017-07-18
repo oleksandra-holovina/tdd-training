@@ -2,7 +2,7 @@ package training;
 
 import org.junit.Before;
 import org.junit.Test;
-import training.instruction_queue.InstructionQueue;
+import training.queue.InstructionQueue;
 import training.parsing.InstructionMessageParser;
 import training.parsing.ParsingException;
 import training.validation.InstructionMessageValidator;
@@ -15,15 +15,12 @@ public class MessageReceiverImplTest {
             "2015-03-05T10:04:56.012Z\n";
 
     private MessageReceiver receiver;
-    private InstructionMessageParser parser = new InstructionMessageParser();
-    private InstructionMessageValidator validator = new InstructionMessageValidator();
-    private InstructionQueue queue = new InstructionQueue();
 
     @Before
     public void setUp() {
-        parser = new InstructionMessageParser();
-        validator = new InstructionMessageValidator();
-        queue = new InstructionQueue();
+        InstructionMessageParser parser = new InstructionMessageParser();
+        InstructionMessageValidator validator = new InstructionMessageValidator();
+        InstructionQueue queue = new InstructionQueue();
 
         receiver = new MessageReceiverImpl(parser, validator, queue);
     }
