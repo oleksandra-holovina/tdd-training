@@ -1,4 +1,4 @@
-package training.instruction_queue;
+package training.queue;
 
 import training.entities.InstructionMessage;
 
