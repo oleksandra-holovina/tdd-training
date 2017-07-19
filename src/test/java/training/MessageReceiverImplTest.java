@@ -8,6 +8,8 @@ import training.parsing.ParsingException;
 import training.validation.InstructionMessageValidator;
 import training.validation.ValidationException;
 
+import static org.junit.Assert.assertEquals;
+
 public class MessageReceiverImplTest {
     private static final String CORRECT_MESSAGE = "InstructionMessage B MZ89 5678 50 2015-03-05T10:04:56.012Z\n";
     private static final String MESSAGE_WITH_PARSE_EXCEPTION = "InstructionMessage a MZ89 5678 50\n";
@@ -15,18 +17,22 @@ public class MessageReceiverImplTest {
             "2015-03-05T10:04:56.012Z\n";
 
     private MessageReceiver receiver;
+    private InstructionQueue queue;
 
     @Before
     public void setUp() {
         InstructionMessageParser parser = new InstructionMessageParser();
         InstructionMessageValidator validator = new InstructionMessageValidator();
-        InstructionQueue queue = new InstructionQueue();
 
+        queue = new InstructionQueue();
         receiver = new MessageReceiverImpl(parser, validator, queue);
     }
     @Test
     public void shouldReceiveCorrectMessage() {
+        assertEquals(queue.count(), 0);
+
         receiver.receive(CORRECT_MESSAGE);
+        assertEquals(queue.count(), 1);
     }
 
     @Test(expected = ParsingException.class)
