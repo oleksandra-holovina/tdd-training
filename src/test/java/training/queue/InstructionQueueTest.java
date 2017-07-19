@@ -59,6 +59,24 @@ public class InstructionQueueTest {
     }
 
     @Test
+    public void shouldDequeueFirstByPriorityThenByFifo(){
+        InstructionMessage messageWithLowerPriorityFirstlyAdded = createInstructionMessage(MessageType.C);
+        InstructionMessage messageWithLowerPrioritySecondlyAdded = createInstructionMessage(MessageType.D);
+        InstructionMessage messageWithMediumPriority = createInstructionMessage(MessageType.B);
+        InstructionMessage messageWithHighPriority = createInstructionMessage(MessageType.A);
+
+        queue.enqueue(messageWithLowerPriorityFirstlyAdded);
+        queue.enqueue(messageWithLowerPrioritySecondlyAdded);
+        queue.enqueue(messageWithMediumPriority);
+        queue.enqueue(messageWithHighPriority);
+
+        assertEquals(messageWithHighPriority, queue.dequeue());
+        assertEquals(messageWithMediumPriority, queue.dequeue());
+        assertEquals(messageWithLowerPriorityFirstlyAdded, queue.dequeue());
+        assertEquals(messageWithLowerPrioritySecondlyAdded, queue.dequeue());
+    }
+
+    @Test
     public void shouldPeekWhenQueueIsNotEmpty() {
         InstructionMessage newMessage = createInstructionMessage(MessageType.B);
         queue.enqueue(newMessage);
@@ -68,7 +86,7 @@ public class InstructionQueueTest {
     }
 
     @Test
-    public void shouldReturnNullWhenPeekNoMessages() {
+    public void shouldReturnNullWhenPeekEmptyQueue() {
         InstructionMessage message = queue.peek();
         assertNull(message);
     }
