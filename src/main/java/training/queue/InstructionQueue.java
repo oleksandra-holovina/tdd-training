@@ -5,13 +5,17 @@ import training.entities.InstructionMessage;
 import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class InstructionQueue {
+    private AtomicInteger serialNumGenerator = new AtomicInteger(0);
+
     private Queue<InstructionMessageWrapper> queue = new PriorityQueue<>();
 
     public void enqueue(InstructionMessage message) {
-        queue.add(wrap(message));
+        int serialNum = serialNumGenerator.getAndIncrement();
+        queue.add(wrap(message, serialNum));
     }
 
     public InstructionMessage dequeue() {
@@ -30,8 +34,8 @@ public class InstructionQueue {
         return queue.isEmpty();
     }
 
-    private InstructionMessageWrapper wrap(InstructionMessage message){
-        return new InstructionMessageWrapper(message);
+    private InstructionMessageWrapper wrap(InstructionMessage message, int serialNum){
+        return new InstructionMessageWrapper(message, serialNum);
     }
 
     private InstructionMessage unwrap(InstructionMessageWrapper wrapper) {

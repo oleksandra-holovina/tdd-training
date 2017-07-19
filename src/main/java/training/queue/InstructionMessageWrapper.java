@@ -6,14 +6,12 @@ import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class InstructionMessageWrapper implements Comparable<InstructionMessageWrapper>{
+    private final InstructionMessage message;
     private final int serialNum;
-    private AtomicInteger serialNumGenerator = new AtomicInteger(0);
 
-    private InstructionMessage message;
-
-    InstructionMessageWrapper(InstructionMessage message){
-        this.serialNum = generateSerialNumber();
+    InstructionMessageWrapper(InstructionMessage message, int serialNum){
         this.message = message;
+        this.serialNum = serialNum;
     }
 
     public InstructionMessage getMessage() {
@@ -36,7 +34,4 @@ public class InstructionMessageWrapper implements Comparable<InstructionMessageW
         return wrapper.getMessage().getInstructionType().getPriority();
     }
 
-    private int generateSerialNumber(){
-        return serialNumGenerator.getAndIncrement();
-    }
 }
