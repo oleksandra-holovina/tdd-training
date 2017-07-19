@@ -78,17 +78,35 @@ public class InstructionMessageParserTest {
     }
 
     @Test
-    public void shouldReturnCorrectData() {
+    public void shouldReturnCorrectType() {
         InstructionMessage message = parser.parse(DEFAULT_CORRECT_MESSAGE);
-
         assertEquals(message.getInstructionType(), MessageType.B);
+    }
+
+    @Test
+    public void shouldReturnCorrectCode() {
+        InstructionMessage message = parser.parse(DEFAULT_CORRECT_MESSAGE);
         assertEquals(message.getProductCode(), "MZ89");
+    }
+
+    @Test
+    public void shouldReturnCorrectQuantity() {
+        InstructionMessage message = parser.parse(DEFAULT_CORRECT_MESSAGE);
         assertEquals(message.getQuantity(), 5678);
+    }
+
+    @Test
+    public void shouldReturnCorrectUOM() {
+        InstructionMessage message = parser.parse(DEFAULT_CORRECT_MESSAGE);
         assertEquals(message.getUOM(), 50);
+    }
+
+    @Test
+    public void shouldReturnCorrectDateTime() {
+        InstructionMessage message = parser.parse(DEFAULT_CORRECT_MESSAGE);
 
         LocalDateTime dateTime = getLocalDateTimeFromString("2015-03-05T10:04:56.012Z");
         assertEquals(message.getTimestamp(), dateTime);
-
     }
 
     private void setException(String message) {
