@@ -1,6 +1,6 @@
-package training.validation;
+package tdd.task.validation;
 
-import training.entities.InstructionMessage;
+import tdd.task.entities.InstructionMessage;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -15,8 +15,9 @@ public class InstructionMessageValidator {
 
     private static final String INVALID_CODE_MESSAGE = "Invalid code. Available codes: 2 uppercase letters followed by 2 digits";
     private static final String INVALID_QUANTITY_MESSAGE = "The quantity should be a number greater than 0";
-    private static final String INVALID_UOM_MESSAGE = "The UOM should be in range 0-256";
-    private static final String INVALID_TIMESTAMP_MESSAGE = "The date should be in range [1 January 1970 - today]";
+    private static final String INVALID_UOM_MESSAGE = "The UOM should be greater or equal to 0 and less than 256";
+    private static final String INVALID_TIMESTAMP_MESSAGE = "The date should be greater than 1 January 1970 and less " +
+            "or equal to current time";
 
     public void validate(InstructionMessage message) {
         validateProductCode(message);
