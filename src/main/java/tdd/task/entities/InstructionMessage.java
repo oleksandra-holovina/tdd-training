@@ -1,4 +1,4 @@
-package training.entities;
+package tdd.task.entities;
 
 import java.time.LocalDateTime;
 

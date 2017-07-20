@@ -1,6 +1,6 @@
-package training.queue;
+package tdd.task.queue;
 
-import training.entities.InstructionMessage;
+import tdd.task.entities.InstructionMessage;
 
 import java.util.Optional;
 import java.util.PriorityQueue;

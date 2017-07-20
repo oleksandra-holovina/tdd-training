@@ -1,4 +1,4 @@
-package training.parsing;
+package tdd.task.parsing;
 
 
 public class ParsingException extends RuntimeException {

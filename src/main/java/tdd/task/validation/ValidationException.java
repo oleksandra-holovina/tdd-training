@@ -1,4 +1,4 @@
-package training.validation;
+package tdd.task.validation;
 
 public class ValidationException extends RuntimeException {
     public ValidationException(String message) {

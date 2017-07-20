@@ -1,9 +1,9 @@
-package training;
+package tdd.task;
 
-import training.entities.InstructionMessage;
-import training.queue.InstructionQueue;
-import training.parsing.InstructionMessageParser;
-import training.validation.InstructionMessageValidator;
+import tdd.task.entities.InstructionMessage;
+import tdd.task.parsing.InstructionMessageParser;
+import tdd.task.queue.InstructionQueue;
+import tdd.task.validation.InstructionMessageValidator;
 
 public class MessageReceiverImpl implements MessageReceiver {
     private InstructionMessageParser parser;
