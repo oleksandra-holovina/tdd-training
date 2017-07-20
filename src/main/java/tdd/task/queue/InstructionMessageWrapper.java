@@ -1,9 +1,8 @@
-package training.queue;
+package tdd.task.queue;
 
-import training.entities.InstructionMessage;
+import tdd.task.entities.InstructionMessage;
 
 import java.util.Comparator;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class InstructionMessageWrapper implements Comparable<InstructionMessageWrapper>{
     private final InstructionMessage message;
@@ -30,8 +29,8 @@ public class InstructionMessageWrapper implements Comparable<InstructionMessageW
         return serialNum;
     }
 
-    private static int getPriority(InstructionMessageWrapper wrapper){
-        return wrapper.getMessage().getInstructionType().getPriority();
+    private int getPriority(){
+        return message.getInstructionType().getPriority();
     }
 
 }
