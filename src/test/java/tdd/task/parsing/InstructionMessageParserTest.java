@@ -1,11 +1,11 @@
-package training.parsing;
+package tdd.task.parsing;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import training.entities.InstructionMessage;
-import training.entities.MessageType;
+import tdd.task.entities.InstructionMessage;
+import tdd.task.entities.MessageType;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,6 +16,12 @@ import static org.junit.Assert.assertEquals;
 public class InstructionMessageParserTest {
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
+    private static final MessageType DEFAULT_MESSAGE_TYPE = MessageType.B;
+    private static final String DEFAULT_MESSAGE_CODE = "MZ89";
+    private static final int DEFAULT_MESSAGE_QUANTITY = 5678;
+    private static final int DEFAULT_MESSAGE_UOM = 50;
+    private static final LocalDateTime DEFAULT_DATE_TIME = getLocalDateTimeFromString("2015-03-05T10:04:56.012Z");
+
     private static final String DEFAULT_CORRECT_MESSAGE = "InstructionMessage B MZ89 5678 50 2015-03-05T10:04:56.012Z\n";
 
     private static final String INVALID_MESSAGE_STRUCTURE = "InstructionMessage A MZ89 5678 50\n";
@@ -24,11 +30,12 @@ public class InstructionMessageParserTest {
     private static final String INVALID_MESSAGE_UOM = "InstructionMessage A MZ89 5 a 2015-03-05T10:04:56.012Z\n";
     private static final String INVALID_MESSAGE_TIMESTAMP = "InstructionMessage A MZ89 5678 50 2015-03-05\n";
 
-    private final String INVALID_MESSAGE_STRUCTURE_MESSAGE = "The structure should be the following:" +
+    private static final String MESSAGE_IS_NULL = "The message passed is equal to null";
+    private static final String INVALID_MESSAGE_STRUCTURE_MESSAGE = "The structure should be the following:" +
             "InstructionMessage type, code, quantity,uom, timestamp separated by space";
-    private final String INVALID_TYPE_MESSAGE = "The type is invalid. Available types: A,B,C,D";
-    private final String INVALID_NUMBER_MESSAGE = "is not a number";
-    private final String INVALID_TIMESTAMP_MESSAGE = "There is an error in timestamp";
+    private static final String INVALID_TYPE_MESSAGE = "The type is invalid. Available types: A,B,C,D";
+    private static final String INVALID_NUMBER_MESSAGE = "is not a number";
+    private static final String INVALID_TIMESTAMP_MESSAGE = "There is an error in timestamp";
 
     private InstructionMessageParser parser;
 
@@ -43,7 +50,7 @@ public class InstructionMessageParserTest {
 
     @Test
     public void shouldThrowExceptionWhenMessageIsNull(){
-        setException(INVALID_MESSAGE_STRUCTURE_MESSAGE);
+        setException(MESSAGE_IS_NULL);
         parser.parse(null);
     }
 
@@ -78,35 +85,33 @@ public class InstructionMessageParserTest {
     }
 
     @Test
-    public void shouldReturnCorrectType() {
+    public void shouldParseCorrectType() {
         InstructionMessage message = parser.parse(DEFAULT_CORRECT_MESSAGE);
-        assertEquals(message.getInstructionType(), MessageType.B);
+        assertEquals(message.getInstructionType(), DEFAULT_MESSAGE_TYPE);
     }
 
     @Test
-    public void shouldReturnCorrectCode() {
+    public void shouldParseCorrectCode() {
         InstructionMessage message = parser.parse(DEFAULT_CORRECT_MESSAGE);
-        assertEquals(message.getProductCode(), "MZ89");
+        assertEquals(message.getProductCode(), DEFAULT_MESSAGE_CODE );
     }
 
     @Test
-    public void shouldReturnCorrectQuantity() {
+    public void shouldParseCorrectQuantity() {
         InstructionMessage message = parser.parse(DEFAULT_CORRECT_MESSAGE);
-        assertEquals(message.getQuantity(), 5678);
+        assertEquals(message.getQuantity(), DEFAULT_MESSAGE_QUANTITY);
     }
 
     @Test
-    public void shouldReturnCorrectUOM() {
+    public void shouldParseCorrectUOM() {
         InstructionMessage message = parser.parse(DEFAULT_CORRECT_MESSAGE);
-        assertEquals(message.getUOM(), 50);
+        assertEquals(message.getUOM(), DEFAULT_MESSAGE_UOM);
     }
 
     @Test
-    public void shouldReturnCorrectDateTime() {
+    public void shouldParseCorrectDateTime() {
         InstructionMessage message = parser.parse(DEFAULT_CORRECT_MESSAGE);
-
-        LocalDateTime dateTime = getLocalDateTimeFromString("2015-03-05T10:04:56.012Z");
-        assertEquals(message.getTimestamp(), dateTime);
+        assertEquals(message.getTimestamp(), DEFAULT_DATE_TIME);
     }
 
     private void setException(String message) {
@@ -114,7 +119,7 @@ public class InstructionMessageParserTest {
         exception.expectMessage(message);
     }
 
-    private LocalDateTime getLocalDateTimeFromString(String timestamp){
+    private static LocalDateTime getLocalDateTimeFromString(String timestamp){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         return LocalDateTime.parse(timestamp, formatter);
     }
