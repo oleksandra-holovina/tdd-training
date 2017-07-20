@@ -1,9 +1,9 @@
-package training.queue;
+package tdd.task.queue;
 
+import tdd.task.entities.InstructionMessage;
+import tdd.task.entities.MessageType;
 import org.junit.Before;
 import org.junit.Test;
-import training.entities.InstructionMessage;
-import training.entities.MessageType;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,6 +17,11 @@ public class InstructionQueueTest {
     private static final int DEFAULT_MESSAGE_UOM = 5;
     private static final String DEFAULT_MESSAGE_TIMESTAMP = "2015-03-05T10:04:56.012Z";
 
+    private static final MessageType MESSAGE_TYPE_A = MessageType.A;
+    private static final MessageType MESSAGE_TYPE_B = MessageType.B;
+    private static final MessageType MESSAGE_TYPE_C = MessageType.C;
+    private static final MessageType MESSAGE_TYPE_D = MessageType.D;
+
     private InstructionQueue queue;
 
     @Before
@@ -25,22 +30,22 @@ public class InstructionQueueTest {
     }
 
     @Test
-    public void shouldDequeueWhenQueueIsNotEmpty() {
+    public void shouldDequeueNotEmptyQueue() {
         InstructionMessage message = createInstructionMessage(MessageType.B);
         queue.enqueue(message);
         assertEquals(message, queue.dequeue());
     }
 
     @Test
-    public void shouldReturnNullWhenDequeueIfNoMessages() {
+    public void shouldReturnNullWhenDequeueEmptyQueue() {
         InstructionMessage message = queue.dequeue();
         assertNull(message);
     }
 
     @Test
     public void shouldDequeueByPriority() {
-        InstructionMessage messageWithHigherPriority = createInstructionMessage(MessageType.B);
-        InstructionMessage messageWithLowerPriority = createInstructionMessage(MessageType.C);
+        InstructionMessage messageWithHigherPriority = createInstructionMessage(MESSAGE_TYPE_B);
+        InstructionMessage messageWithLowerPriority = createInstructionMessage(MESSAGE_TYPE_C);
         queue.enqueue(messageWithHigherPriority);
         queue.enqueue(messageWithLowerPriority);
 
@@ -49,8 +54,8 @@ public class InstructionQueueTest {
 
     @Test
     public void shouldDequeueByFifo() {
-        InstructionMessage firstlyAdded = createInstructionMessage(MessageType.C);
-        InstructionMessage secondlyAdded = createInstructionMessage(MessageType.D);
+        InstructionMessage firstlyAdded = createInstructionMessage(MESSAGE_TYPE_C);
+        InstructionMessage secondlyAdded = createInstructionMessage(MESSAGE_TYPE_D);
 
         queue.enqueue(firstlyAdded);
         queue.enqueue(secondlyAdded);
@@ -60,25 +65,25 @@ public class InstructionQueueTest {
 
     @Test
     public void shouldDequeueFirstByPriorityThenByFifo(){
-        InstructionMessage messageWithLowerPriorityFirstlyAdded = createInstructionMessage(MessageType.C);
-        InstructionMessage messageWithLowerPrioritySecondlyAdded = createInstructionMessage(MessageType.D);
-        InstructionMessage messageWithMediumPriority = createInstructionMessage(MessageType.B);
-        InstructionMessage messageWithHighPriority = createInstructionMessage(MessageType.A);
+        InstructionMessage lowPriorityFirstlyAddedMessage = createInstructionMessage(MESSAGE_TYPE_C);
+        InstructionMessage lowPrioritySecondlyAddedMessage = createInstructionMessage(MESSAGE_TYPE_D);
+        InstructionMessage mediumPriorityMessage = createInstructionMessage(MESSAGE_TYPE_B);
+        InstructionMessage messageWithHighPriority = createInstructionMessage(MESSAGE_TYPE_A);
 
-        queue.enqueue(messageWithLowerPriorityFirstlyAdded);
-        queue.enqueue(messageWithLowerPrioritySecondlyAdded);
-        queue.enqueue(messageWithMediumPriority);
+        queue.enqueue(lowPriorityFirstlyAddedMessage);
+        queue.enqueue(lowPrioritySecondlyAddedMessage);
+        queue.enqueue(mediumPriorityMessage);
         queue.enqueue(messageWithHighPriority);
 
         assertEquals(messageWithHighPriority, queue.dequeue());
-        assertEquals(messageWithMediumPriority, queue.dequeue());
-        assertEquals(messageWithLowerPriorityFirstlyAdded, queue.dequeue());
-        assertEquals(messageWithLowerPrioritySecondlyAdded, queue.dequeue());
+        assertEquals(mediumPriorityMessage, queue.dequeue());
+        assertEquals(lowPriorityFirstlyAddedMessage, queue.dequeue());
+        assertEquals(lowPrioritySecondlyAddedMessage, queue.dequeue());
     }
 
     @Test
-    public void shouldPeekWhenQueueIsNotEmpty() {
-        InstructionMessage newMessage = createInstructionMessage(MessageType.B);
+    public void shouldPeekNotEmptyQueue() {
+        InstructionMessage newMessage = createInstructionMessage(MESSAGE_TYPE_B);
         queue.enqueue(newMessage);
 
         InstructionMessage message = queue.peek();
@@ -93,8 +98,8 @@ public class InstructionQueueTest {
 
     @Test
     public void shouldPeekByPriority() {
-        InstructionMessage messageWithHigherPriority = createInstructionMessage(MessageType.B);
-        InstructionMessage messageWithLowerPriority = createInstructionMessage(MessageType.C);
+        InstructionMessage messageWithHigherPriority = createInstructionMessage(MESSAGE_TYPE_B);
+        InstructionMessage messageWithLowerPriority = createInstructionMessage(MESSAGE_TYPE_C);
 
         queue.enqueue(messageWithHigherPriority);
         queue.enqueue(messageWithLowerPriority);
@@ -104,8 +109,8 @@ public class InstructionQueueTest {
 
     @Test
     public void shouldPeekByFifo() {
-        InstructionMessage firstlyAdded = createInstructionMessage(MessageType.C);
-        InstructionMessage secondlyAdded = createInstructionMessage(MessageType.D);
+        InstructionMessage firstlyAdded = createInstructionMessage(MESSAGE_TYPE_C);
+        InstructionMessage secondlyAdded = createInstructionMessage(MESSAGE_TYPE_D);
 
         queue.enqueue(firstlyAdded);
         queue.enqueue(secondlyAdded);
@@ -118,7 +123,7 @@ public class InstructionQueueTest {
     public void shouldIncrementCount() {
         assertEquals(0, queue.count());
 
-        InstructionMessage newMessage = createInstructionMessage(MessageType.B);
+        InstructionMessage newMessage = createInstructionMessage(MESSAGE_TYPE_B);
         queue.enqueue(newMessage);
 
         assertEquals(1, queue.count());
@@ -131,7 +136,7 @@ public class InstructionQueueTest {
 
     @Test
     public void shouldShowIsNotEmpty() {
-        InstructionMessage newMessage = createInstructionMessage(MessageType.B);
+        InstructionMessage newMessage = createInstructionMessage(MESSAGE_TYPE_B);
         queue.enqueue(newMessage);
         assertFalse(queue.isEmpty());
     }
