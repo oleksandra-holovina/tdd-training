@@ -1,7 +1,7 @@
-package training.parsing;
+package tdd.task.parsing;
 
-import training.entities.InstructionMessage;
-import training.entities.MessageType;
+import tdd.task.entities.InstructionMessage;
+import tdd.task.entities.MessageType;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,6 +17,7 @@ public class InstructionMessageParser {
     private static final int UOM_INDEX = 4;
     private static final int TIMESTAMP_INDEX = 5;
 
+    private static final String MESSAGE_IS_NULL = "The message passed is equal to null";
     private static final String INVALID_STRUCTURE_MESSAGE = "The structure should be the following:" +
             "InstructionMessage type, code, quantity,uom, timestamp separated by space";
     private static final String INVALID_TYPE_MESSAGE = "The type is invalid. Available types: A,B,C,D";
@@ -26,14 +27,21 @@ public class InstructionMessageParser {
     private static final String INSTRUCTION_MESSAGE_REGEX = "^InstructionMessage \\S \\S+ \\S+ \\S+ \\S+\\n$";
 
     public InstructionMessage parse(String text){
+        validateIfMessageIsNull(text);
         validateStructure(text);
 
         String[] messageParts = splitMessageByDelimiter(text);
         return createInstructionMessage(messageParts);
     }
 
+    private void validateIfMessageIsNull(String text){
+        if (text == null ){
+            throw new ParsingException(MESSAGE_IS_NULL);
+        }
+    }
+
     private void validateStructure(String text){
-        if (text == null || !text.matches(INSTRUCTION_MESSAGE_REGEX)){
+        if (!text.matches(INSTRUCTION_MESSAGE_REGEX)){
             throw new ParsingException(INVALID_STRUCTURE_MESSAGE);
         }
     }
