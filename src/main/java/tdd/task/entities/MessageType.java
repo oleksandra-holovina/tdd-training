@@ -1,7 +1,7 @@
-package training.entities;
+package tdd.task.entities;
 
 public enum MessageType {
-    A(TypeConstants.HIGH), B(TypeConstants.MEDIUM), C(TypeConstants.LOW), D(TypeConstants.LOW);
+    A(MessagePriority.HIGH), B(MessagePriority.MEDIUM), C(MessagePriority.LOW), D(MessagePriority.LOW);
 
     private int priority;
 
@@ -13,7 +13,7 @@ public enum MessageType {
         return priority;
     }
 
-    public static class TypeConstants{
+    private static class MessagePriority {
         private static final int HIGH = 1;
         private static final int MEDIUM = 2;
         private static final int LOW = 3;
