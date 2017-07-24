@@ -23,7 +23,7 @@ public class InstructionMessageValidatorTest {
     private static final int QUANTITY_BOUND = 1;
     private static final int UOM_LOWER_BOUND = 0;
     private static final int UOM_UPPER_BOUND = 255;
-    private static LocalDateTime DATE_TIME_LOWER_BOUND = getUnixEpoch().plusDays(1);
+    private static LocalDateTime DATE_TIME_LOWER_BOUND = getUnixEpoch().plusNanos(1);
     private static final LocalDateTime DATE_TIME_UPPER_BOUND = getCurrentDateTime();
 
     private static final String INVALID_CODE_MESSAGE = "Available codes: 2 uppercase letters followed by 2 digits";
@@ -84,13 +84,6 @@ public class InstructionMessageValidatorTest {
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenUomGreaterThanMinValue() {
-        InstructionMessage message = createInstructionMessage(DEFAULT_TYPE, DEFAULT_CODE, DEFAULT_QUANTITY,
-                UOM_LOWER_BOUND + 1, DATE_TIME_UPPER_BOUND);
-        validator.validate(message);
-    }
-
-    @Test
     public void shouldNotThrowExceptionWhenMaxValidUom() {
         InstructionMessage message = createInstructionMessage(DEFAULT_TYPE, DEFAULT_CODE, DEFAULT_QUANTITY,
                 UOM_UPPER_BOUND, DATE_TIME_UPPER_BOUND);
@@ -112,7 +105,7 @@ public class InstructionMessageValidatorTest {
         setException(INVALID_TIMESTAMP_MESSAGE);
 
         InstructionMessage message = createInstructionMessage(DEFAULT_TYPE, DEFAULT_CODE, QUANTITY_BOUND,
-                UOM_LOWER_BOUND, DATE_TIME_LOWER_BOUND.minusDays(1));
+                UOM_LOWER_BOUND, DATE_TIME_LOWER_BOUND.minusNanos(1));
         validator.validate(message);
     }
 
@@ -127,7 +120,7 @@ public class InstructionMessageValidatorTest {
     @Test
     public void shouldNotThrowExceptionWhenTimestampLessThanMaxValue() {
         InstructionMessage message = createInstructionMessage(DEFAULT_TYPE, DEFAULT_CODE, QUANTITY_BOUND,
-                UOM_LOWER_BOUND, DATE_TIME_UPPER_BOUND.minusDays(1));
+                UOM_LOWER_BOUND, DATE_TIME_UPPER_BOUND.minusNanos(1));
         validator.validate(message);
     }
 
