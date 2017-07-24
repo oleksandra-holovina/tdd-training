@@ -42,40 +42,10 @@ public class MessageReceiverImplTest {
     }
     @Test
     public void shouldEnqueueCorrectMessage() {
-        assertEquals(queue.count(), 0);
-
         receiver.receive(CORRECT_MESSAGE);
-        assertEquals(queue.count(), 1);
-    }
 
-    @Test
-    public void shouldReceiveCorrectMessageType() {
         InstructionMessage message = receiveInstructionMessageAndReturn();
-        assertEquals(message.getInstructionType(), DEFAULT_TYPE);
-    }
-
-    @Test
-    public void shouldReceiveCorrectMessageCode() {
-        InstructionMessage message = receiveInstructionMessageAndReturn();
-        assertEquals(message.getProductCode(), DEFAULT_CODE);
-    }
-
-    @Test
-    public void shouldReceiveCorrectMessageQuantity() {
-        InstructionMessage message = receiveInstructionMessageAndReturn();
-        assertEquals(message.getQuantity(), DEFAULT_QUANTITY);
-    }
-
-    @Test
-    public void shouldReceiveCorrectMessageUom() {
-        InstructionMessage message = receiveInstructionMessageAndReturn();
-        assertEquals(message.getUOM(), DEFAULT_UOM);
-    }
-
-    @Test
-    public void shouldReceiveCorrectMessageTimestamp() {
-        InstructionMessage message = receiveInstructionMessageAndReturn();
-        assertEquals(message.getTimestamp(), DEFAULT_DATE_TIME);
+        checkInstructionMessage(message);
     }
 
     @Test(expected = ParsingException.class)
@@ -96,5 +66,14 @@ public class MessageReceiverImplTest {
     private InstructionMessage receiveInstructionMessageAndReturn(){
         receiver.receive(CORRECT_MESSAGE);
         return queue.peek();
+    }
+
+    private void checkInstructionMessage(InstructionMessage message) {
+        assertEquals(message.getInstructionType(), DEFAULT_TYPE);
+        assertEquals(message.getProductCode(), DEFAULT_CODE);
+        assertEquals(message.getQuantity(), DEFAULT_QUANTITY);
+        assertEquals(message.getUOM(), DEFAULT_UOM);
+        assertEquals(message.getTimestamp(), DEFAULT_DATE_TIME);
+        assertEquals(message.getTimestamp(), DEFAULT_DATE_TIME);
     }
 }
