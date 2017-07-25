@@ -16,13 +16,13 @@ import java.time.format.DateTimeFormatter;
 import static org.junit.Assert.assertEquals;
 
 public class MessageReceiverImplTest {
-    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     private static final MessageType DEFAULT_TYPE = MessageType.B;
     private static final String DEFAULT_CODE = "MZ89";
     private static final int DEFAULT_QUANTITY = 5678;
     private static final int DEFAULT_UOM = 50;
-    private static final LocalDateTime DEFAULT_DATE_TIME = getDateTimeFromString("2015-03-05T10:04:56.012Z");
+    private static final LocalDateTime DEFAULT_DATE_TIME = LocalDateTime.parse("2015-03-05T10:04:56.012Z", formatter);
 
     private static final String CORRECT_MESSAGE = "InstructionMessage B MZ89 5678 50 2015-03-05T10:04:56.012Z\n";
     private static final String MESSAGE_WITH_PARSE_EXCEPTION = "InstructionMessage a MZ89 5678 50\n";
@@ -42,25 +42,18 @@ public class MessageReceiverImplTest {
     }
     @Test
     public void shouldEnqueueCorrectMessage() {
-        receiver.receive(CORRECT_MESSAGE);
-
         InstructionMessage message = receiveInstructionMessageAndReturn();
         checkInstructionMessage(message);
     }
 
     @Test(expected = ParsingException.class)
-    public void shouldReceiveMessageWithParsingException() {
+    public void shouldThrowParsingExceptionWhenMessageCanNotBeParsed() {
         receiver.receive(MESSAGE_WITH_PARSE_EXCEPTION);
     }
 
     @Test(expected = ValidationException.class)
-    public void shouldReceiveMessageWithValidationException() {
+    public void shouldThrowValidationExceptionWhenMessageIsInvalid() {
         receiver.receive(MESSAGE_WITH_VALIDATION_EXCEPTION);
-    }
-
-    private static LocalDateTime getDateTimeFromString(String dateTime){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
-        return LocalDateTime.parse(dateTime, formatter);
     }
 
     private InstructionMessage receiveInstructionMessageAndReturn(){
@@ -72,8 +65,7 @@ public class MessageReceiverImplTest {
         assertEquals(message.getInstructionType(), DEFAULT_TYPE);
         assertEquals(message.getProductCode(), DEFAULT_CODE);
         assertEquals(message.getQuantity(), DEFAULT_QUANTITY);
-        assertEquals(message.getUOM(), DEFAULT_UOM);
-        assertEquals(message.getTimestamp(), DEFAULT_DATE_TIME);
+        assertEquals(message.getUom(), DEFAULT_UOM);
         assertEquals(message.getTimestamp(), DEFAULT_DATE_TIME);
     }
 }

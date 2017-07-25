@@ -4,13 +4,13 @@ import tdd.task.entities.InstructionMessage;
 
 import java.util.Comparator;
 
-public class InstructionMessageWrapper implements Comparable<InstructionMessageWrapper>{
+class InstructionMessageWrapper implements Comparable<InstructionMessageWrapper>{
     private final InstructionMessage message;
-    private final int serialNum;
+    private final int sequenceNumber;
 
-    InstructionMessageWrapper(InstructionMessage message, int serialNum){
+    InstructionMessageWrapper(InstructionMessage message, int sequenceNumber){
         this.message = message;
-        this.serialNum = serialNum;
+        this.sequenceNumber = sequenceNumber;
     }
 
     public InstructionMessage getMessage() {
@@ -21,12 +21,12 @@ public class InstructionMessageWrapper implements Comparable<InstructionMessageW
     public int compareTo(InstructionMessageWrapper messageWrapper) {
 
         return Comparator.comparing(InstructionMessageWrapper::getPriority).
-                thenComparing(InstructionMessageWrapper::getSerialNum).
+                thenComparing(InstructionMessageWrapper::getSequenceNumber).
                 compare(this, messageWrapper);
     }
 
-    private int getSerialNum() {
-        return serialNum;
+    private int getSequenceNumber() {
+        return sequenceNumber;
     }
 
     private int getPriority(){

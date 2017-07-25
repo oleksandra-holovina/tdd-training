@@ -9,12 +9,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class InstructionQueue {
-    private AtomicInteger serialNumGenerator = new AtomicInteger(0);
+    private AtomicInteger sequenceNumberGenerator = new AtomicInteger();
 
     private Queue<InstructionMessageWrapper> queue = new PriorityQueue<>();
 
     public void enqueue(InstructionMessage message) {
-        int serialNum = serialNumGenerator.getAndIncrement();
+        int serialNum = sequenceNumberGenerator.getAndIncrement();
         queue.add(wrap(message, serialNum));
     }
 

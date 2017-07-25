@@ -6,15 +6,15 @@ public class InstructionMessage {
     private MessageType instructionType;
     private String productCode;
     private int quantity;
-    private int UOM;
+    private int uom;
     private LocalDateTime timestamp;
 
-    public InstructionMessage(MessageType instructionType, String productCode, int quantity, int UOM,
+    public InstructionMessage(MessageType instructionType, String productCode, int quantity, int uom,
                               LocalDateTime timestamp) {
         this.instructionType = instructionType;
         this.productCode = productCode;
         this.quantity = quantity;
-        this.UOM = UOM;
+        this.uom = uom;
         this.timestamp = timestamp;
     }
 
@@ -30,8 +30,8 @@ public class InstructionMessage {
         return quantity;
     }
 
-    public int getUOM() {
-        return UOM;
+    public int getUom() {
+        return uom;
     }
 
     public LocalDateTime getTimestamp() {

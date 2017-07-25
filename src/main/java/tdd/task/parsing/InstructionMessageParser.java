@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class InstructionMessageParser {
-    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
     private static final String WORD_DELIMITER_REGEX = "\\s";
 
     private static final int TYPE_INDEX = 1;
@@ -18,31 +18,31 @@ public class InstructionMessageParser {
     private static final int TIMESTAMP_INDEX = 5;
 
     private static final String MESSAGE_IS_NULL = "The message passed is equal to null";
-    private static final String INVALID_STRUCTURE_MESSAGE = "The structure should be the following:" +
-            "InstructionMessage type, code, quantity,uom, timestamp separated by space";
-    private static final String INVALID_TYPE_MESSAGE = "The type is invalid. Available types: A,B,C,D";
-    private static final String INVALID_NUMBER_MESSAGE = " is not a number";
-    private static final String INVALID_TIMESTAMP_MESSAGE = "There is an error in timestamp";
+    private static final String INCORRECT_STRUCTURE_MESSAGE = "The structure should be the following:" +
+            "InstructionMessage type code quantity uom timestamp";
+    private static final String INCORRECT_TYPE_MESSAGE = "The type is invalid. Available types: A,B,C,D";
+    private static final String INCORRECT_NUMBER_MESSAGE = " is not a number";
+    private static final String INCORRECT_TIMESTAMP_MESSAGE = "There is an error in timestamp";
 
-    private static final String INSTRUCTION_MESSAGE_REGEX = "^InstructionMessage \\S \\S+ \\S+ \\S+ \\S+\\n$";
+    private static final String INSTRUCTION_MESSAGE_REGEX = "^InstructionMessage \\S \\S+ \\S+ \\S+ \\S+\n$";
 
     public InstructionMessage parse(String text){
-        validateIfMessageIsNull(text);
-        validateStructure(text);
+        checkIfMessageIsNull(text);
+        checkStructure(text);
 
         String[] messageParts = splitMessageByDelimiter(text);
         return createInstructionMessage(messageParts);
     }
 
-    private void validateIfMessageIsNull(String text){
+    private void checkIfMessageIsNull(String text){
         if (text == null ){
             throw new ParsingException(MESSAGE_IS_NULL);
         }
     }
 
-    private void validateStructure(String text){
+    private void checkStructure(String text){
         if (!text.matches(INSTRUCTION_MESSAGE_REGEX)){
-            throw new ParsingException(INVALID_STRUCTURE_MESSAGE);
+            throw new ParsingException(INCORRECT_STRUCTURE_MESSAGE);
         }
     }
 
@@ -51,17 +51,17 @@ public class InstructionMessageParser {
         String code = messageParts[CODE_INDEX];
         int quantity = convertStringToInteger(messageParts[QUANTITY_INDEX]);
         int uom = convertStringToInteger(messageParts[UOM_INDEX]);
-        LocalDateTime date = getTimestamp(messageParts[TIMESTAMP_INDEX]);
+        LocalDateTime timestamp = getTimestamp(messageParts[TIMESTAMP_INDEX]);
 
-        return new InstructionMessage(type, code, quantity, uom, date);
+        return new InstructionMessage(type, code, quantity, uom, timestamp);
     }
 
-    private MessageType getMessageType(String typeStr){
+    private MessageType getMessageType(String type){
         try {
-            return MessageType.valueOf(typeStr);
+            return MessageType.valueOf(type);
         }
         catch (IllegalArgumentException e){
-            throw new ParsingException(INVALID_TYPE_MESSAGE);
+            throw new ParsingException(INCORRECT_TYPE_MESSAGE);
         }
     }
 
@@ -70,16 +70,16 @@ public class InstructionMessageParser {
             return Integer.parseInt(number);
         }
         catch (NumberFormatException e){
-            throw new ParsingException(number + INVALID_NUMBER_MESSAGE);
+            throw new ParsingException(number + INCORRECT_NUMBER_MESSAGE);
         }
     }
 
     private LocalDateTime getTimestamp(String timestamp) {
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern((DATE_TIME_FORMAT));
             return LocalDateTime.parse(timestamp, formatter);
-        } catch (DateTimeParseException e) {
-            throw new ParsingException(INVALID_TIMESTAMP_MESSAGE);
+        }
+        catch (DateTimeParseException e) {
+            throw new ParsingException(INCORRECT_TIMESTAMP_MESSAGE);
         }
     }
 
