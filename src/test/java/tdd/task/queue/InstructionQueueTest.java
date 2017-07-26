@@ -36,9 +36,12 @@ public class InstructionQueueTest {
     }
 
     @Test
-    public void shouldIncrementCount() {
+    public void shouldReturnCountZeroWhenNothingWasEnqueued() {
         assertEquals(0, queue.count());
+    }
 
+    @Test
+    public void shouldIncrementCount() {
         InstructionMessage newMessage = createInstructionMessage(TYPE_B);
         queue.enqueue(newMessage);
 
