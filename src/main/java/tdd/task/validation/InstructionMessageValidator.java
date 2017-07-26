@@ -27,7 +27,7 @@ public class InstructionMessageValidator {
     }
 
     private void validateProductCode(String code) {
-        if (code == null || !code.matches(PRODUCT_CODE_REGEX)) {
+        if (!code.matches(PRODUCT_CODE_REGEX)) {
             throw new ValidationException(INVALID_CODE_MESSAGE);
         }
     }
