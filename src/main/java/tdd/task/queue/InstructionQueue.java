@@ -14,8 +14,8 @@ public class InstructionQueue {
     private Queue<InstructionMessageWrapper> queue = new PriorityQueue<>();
 
     public void enqueue(InstructionMessage message) {
-        int serialNum = sequenceNumberGenerator.getAndIncrement();
-        queue.add(wrap(message, serialNum));
+        int sequenceNumber = sequenceNumberGenerator.getAndIncrement();
+        queue.add(wrap(message, sequenceNumber));
     }
 
     public InstructionMessage dequeue() {
@@ -34,8 +34,8 @@ public class InstructionQueue {
         return queue.isEmpty();
     }
 
-    private InstructionMessageWrapper wrap(InstructionMessage message, int serialNum){
-        return new InstructionMessageWrapper(message, serialNum);
+    private InstructionMessageWrapper wrap(InstructionMessage message, int sequenceNumber){
+        return new InstructionMessageWrapper(message, sequenceNumber);
     }
 
     private InstructionMessage unwrap(InstructionMessageWrapper wrapper) {

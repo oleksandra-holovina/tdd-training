@@ -31,8 +31,8 @@ public class InstructionMessageParserTest {
 
     private static final String MESSAGE_IS_NULL = "The message passed is equal to null";
     private static final String INCORRECT_STRUCTURE_MESSAGE = "The structure should be the following:" +
-            "InstructionMessage type code quantity uom timestamp";
-    private static final String INCORRECT_TYPE_MESSAGE = "The type is invalid. Available types: A,B,C,D";
+            "InstructionMessage type code quantity uom timestamp\\n";
+    private static final String INCORRECT_TYPE_MESSAGE = "The type is incorrect. Available types: A,B,C,D";
     private static final String INCORRECT_NUMBER_MESSAGE = "is not a number";
     private static final String INCORRECT_TIMESTAMP_MESSAGE = "There is an error in timestamp";
 
@@ -42,31 +42,31 @@ public class InstructionMessageParserTest {
     public ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void shouldParseCorrectType() {
+    public void shouldNotThrowExceptionWhenParseCorrectType() {
         InstructionMessage message = parser.parse(DEFAULT_CORRECT_MESSAGE);
         assertEquals(message.getInstructionType(), DEFAULT_TYPE);
     }
 
     @Test
-    public void shouldParseCorrectCode() {
+    public void shouldNotThrowExceptionWhenParseCorrectCode() {
         InstructionMessage message = parser.parse(DEFAULT_CORRECT_MESSAGE);
         assertEquals(message.getProductCode(), DEFAULT_CODE);
     }
 
     @Test
-    public void shouldParseCorrectQuantity() {
+    public void shouldNotThrowExceptionWhenParseCorrectQuantity() {
         InstructionMessage message = parser.parse(DEFAULT_CORRECT_MESSAGE);
         assertEquals(message.getQuantity(), DEFAULT_QUANTITY);
     }
 
     @Test
-    public void shouldParseCorrectUom() {
+    public void shouldNotThrowExceptionWhenParseCorrectUom() {
         InstructionMessage message = parser.parse(DEFAULT_CORRECT_MESSAGE);
         assertEquals(message.getUom(), DEFAULT_UOM);
     }
 
     @Test
-    public void shouldParseCorrectDateTime() {
+    public void shouldNotThrowExceptionWhenParseCorrectTimestamp() {
         InstructionMessage message = parser.parse(DEFAULT_CORRECT_MESSAGE);
         assertEquals(message.getTimestamp(), DEFAULT_DATE_TIME);
     }

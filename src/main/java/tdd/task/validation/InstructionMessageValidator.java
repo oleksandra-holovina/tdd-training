@@ -12,6 +12,7 @@ public class InstructionMessageValidator {
     private static final int LOWER_UOM_BOUND = 0;
     private static final int UPPER_UOM_BOUND = 255;
     private static final String PRODUCT_CODE_REGEX = "[A-Z]{2}\\d{2}";
+    private static final LocalDateTime greaterThanUnixEpoch = LocalDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC).plusSeconds(1);
 
     private static final String INVALID_CODE_MESSAGE = "Invalid code. Available codes: 2 uppercase letters followed by 2 digits";
     private static final String INVALID_QUANTITY_MESSAGE = "The quantity should be a number greater than 0";
@@ -51,7 +52,6 @@ public class InstructionMessageValidator {
     }
 
     private boolean isTimestampInvalid(LocalDateTime timestamp){
-        LocalDateTime greaterThanUnixEpoch = LocalDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC).plusNanos(1);
         return timestamp.isBefore(greaterThanUnixEpoch) || timestamp.isAfter(LocalDateTime.now());
     }
 }

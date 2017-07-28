@@ -24,12 +24,12 @@ public class InstructionQueueTest {
     private InstructionQueue queue = new InstructionQueue();
 
     @Test
-    public void shouldReturnIsEmptyTrue() {
+    public void shouldReturnTrueWhenQueueIsEmpty() {
         assertTrue(queue.isEmpty());
     }
 
     @Test
-    public void shouldReturnIsEmptyFalse() {
+    public void shouldReturnFalseWhenQueueIsNotEmpty() {
         InstructionMessage newMessage = createInstructionMessage(TYPE_B);
         queue.enqueue(newMessage);
         assertFalse(queue.isEmpty());
@@ -41,7 +41,7 @@ public class InstructionQueueTest {
     }
 
     @Test
-    public void shouldIncrementCount() {
+    public void shouldIncrementCountWhenMessageIsEnqueued() {
         InstructionMessage newMessage = createInstructionMessage(TYPE_B);
         queue.enqueue(newMessage);
 
@@ -49,20 +49,20 @@ public class InstructionQueueTest {
     }
 
     @Test
-    public void shouldReturnMessageWhenDequeueNotEmptyQueue() {
+    public void shouldReturnMessageWhenDequeueFromNonEmptyQueue() {
         InstructionMessage message = createInstructionMessage(MessageType.B);
         queue.enqueue(message);
         assertEquals(message, queue.dequeue());
     }
 
     @Test
-    public void shouldReturnNullWhenDequeueEmptyQueue() {
+    public void shouldReturnNullWhenDequeueFromEmptyQueue() {
         InstructionMessage message = queue.dequeue();
         assertNull(message);
     }
 
     @Test
-    public void shouldDequeueByPriorityEqualTypes() {
+    public void shouldDequeueByPriorityWhenTypesAreEqual() {
         InstructionMessage firstlyAdded = createInstructionMessage(TYPE_B);
         InstructionMessage secondlyAdded = createInstructionMessage(TYPE_B);
 
@@ -73,18 +73,18 @@ public class InstructionQueueTest {
     }
 
     @Test
-    public void shouldDequeueByPriorityDifferentTypes() {
+    public void shouldDequeueByPriorityWhenTypesAreDifferent() {
         InstructionMessage messageWithLowerPriority = createInstructionMessage(TYPE_C);
         InstructionMessage messageWithHigherPriority = createInstructionMessage(TYPE_B);
 
-        queue.enqueue(messageWithHigherPriority);
         queue.enqueue(messageWithLowerPriority);
+        queue.enqueue(messageWithHigherPriority);
 
         assertEquals(messageWithHigherPriority, queue.dequeue());
     }
 
     @Test
-    public void shouldDequeueByFifo() {
+    public void shouldDequeueByFifoWhenPrioritiesAreEqual() {
         InstructionMessage firstlyAdded = createInstructionMessage(TYPE_C);
         InstructionMessage secondlyAdded = createInstructionMessage(TYPE_D);
 
@@ -95,7 +95,7 @@ public class InstructionQueueTest {
     }
 
     @Test
-    public void shouldDequeueFirstByPriorityThenByFifo(){
+    public void shouldDequeueFirstByPriorityThenByFifoWhenDifferentTypes(){
         InstructionMessage lowPriorityFirstlyAddedMessage = createInstructionMessage(TYPE_C);
         InstructionMessage lowPrioritySecondlyAddedMessage = createInstructionMessage(TYPE_D);
         InstructionMessage mediumPriorityMessage = createInstructionMessage(TYPE_B);
@@ -113,7 +113,7 @@ public class InstructionQueueTest {
     }
 
     @Test
-    public void shouldReturnMessageWhenPeekNotEmptyQueue() {
+    public void shouldReturnMessageWhenPeekNonEmptyQueue() {
         InstructionMessage newMessage = createInstructionMessage(TYPE_B);
         queue.enqueue(newMessage);
 
@@ -133,7 +133,7 @@ public class InstructionQueueTest {
         queue.enqueue(newMessage);
 
         assertEquals(1, queue.count());
-        InstructionMessage message = queue.peek();
+        queue.peek();
         assertEquals(1, queue.count());
     }
 

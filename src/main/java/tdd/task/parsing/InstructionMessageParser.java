@@ -19,8 +19,8 @@ public class InstructionMessageParser {
 
     private static final String MESSAGE_IS_NULL = "The message passed is equal to null";
     private static final String INCORRECT_STRUCTURE_MESSAGE = "The structure should be the following:" +
-            "InstructionMessage type code quantity uom timestamp";
-    private static final String INCORRECT_TYPE_MESSAGE = "The type is invalid. Available types: A,B,C,D";
+            "InstructionMessage type code quantity uom timestamp\\n";
+    private static final String INCORRECT_TYPE_MESSAGE = "The type is incorrect. Available types: A,B,C,D";
     private static final String INCORRECT_NUMBER_MESSAGE = " is not a number";
     private static final String INCORRECT_TIMESTAMP_MESSAGE = "There is an error in timestamp";
 

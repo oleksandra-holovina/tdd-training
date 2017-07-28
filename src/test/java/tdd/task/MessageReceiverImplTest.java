@@ -41,7 +41,7 @@ public class MessageReceiverImplTest {
         receiver = new MessageReceiverImpl(parser, validator, queue);
     }
     @Test
-    public void shouldEnqueueCorrectMessage() {
+    public void shouldNotThrowExceptionWhenEnqueueCorrectMessage() {
         InstructionMessage message = receiveInstructionMessageAndReturn();
         checkInstructionMessage(message);
     }

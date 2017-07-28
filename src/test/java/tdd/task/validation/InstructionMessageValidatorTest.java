@@ -22,7 +22,7 @@ public class InstructionMessageValidatorTest {
     private static final int QUANTITY_BOUND = 1;
     private static final int UOM_LOWER_BOUND = 0;
     private static final int UOM_UPPER_BOUND = 255;
-    private static final LocalDateTime DATE_TIME_LOWER_BOUND = LocalDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC).plusNanos(1);
+    private static final LocalDateTime DATE_TIME_LOWER_BOUND = LocalDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC).plusSeconds(1);
 
     private static final String INVALID_CODE_MESSAGE = "Available codes: 2 uppercase letters followed by 2 digits";
     private static final String INVALID_QUANTITY_MESSAGE = "The quantity should be a number greater than 0";
@@ -30,7 +30,7 @@ public class InstructionMessageValidatorTest {
     private static final String INVALID_TIMESTAMP_MESSAGE = "The timestamp should be greater than 1 January 1970 and less " +
             "or equal to current time";
 
-    private InstructionMessageValidator validator = new InstructionMessageValidator();;
+    private InstructionMessageValidator validator = new InstructionMessageValidator();
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -52,7 +52,7 @@ public class InstructionMessageValidatorTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenQuantityLessThanMinValue() {
+    public void shouldThrowExceptionWhenQuantityIsLessThanMinValue() {
         setException(INVALID_QUANTITY_MESSAGE);
 
         InstructionMessage message = createInstructionMessage(DEFAULT_TYPE, DEFAULT_CODE,
@@ -61,14 +61,14 @@ public class InstructionMessageValidatorTest {
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenValidQuantity() {
+    public void shouldNotThrowExceptionWhenQuantityIsValid() {
         InstructionMessage message = createInstructionMessage(DEFAULT_TYPE, DEFAULT_CODE, QUANTITY_BOUND,
                 DEFAULT_UOM, DEFAULT_TIMESTAMP);
         validator.validate(message);
     }
 
     @Test
-    public void shouldThrowExceptionWhenUomLessThanMinValue() {
+    public void shouldThrowExceptionWhenUomIsLessThanMinValue() {
         setException(INVALID_UOM_MESSAGE);
 
         InstructionMessage message = createInstructionMessage(DEFAULT_TYPE, DEFAULT_CODE, DEFAULT_QUANTITY,
@@ -77,21 +77,21 @@ public class InstructionMessageValidatorTest {
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenMinValidUom() {
+    public void shouldNotThrowExceptionWhenUomIsEqualToMinValue() {
         InstructionMessage message = createInstructionMessage(DEFAULT_TYPE, DEFAULT_CODE, DEFAULT_QUANTITY,
                 UOM_LOWER_BOUND, DEFAULT_TIMESTAMP);
         validator.validate(message);
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenMaxValidUom() {
+    public void shouldNotThrowExceptionWhenUomIsEqualToMaxValue() {
         InstructionMessage message = createInstructionMessage(DEFAULT_TYPE, DEFAULT_CODE, DEFAULT_QUANTITY,
                 UOM_UPPER_BOUND, DEFAULT_TIMESTAMP);
         validator.validate(message);
     }
 
     @Test
-    public void shouldThrowExceptionWhenUomGreaterThanMaxValue() {
+    public void shouldThrowExceptionWhenUomIsGreaterThanMaxValue() {
         setException(INVALID_UOM_MESSAGE);
 
         InstructionMessage message = createInstructionMessage(DEFAULT_TYPE, DEFAULT_CODE, DEFAULT_QUANTITY,
@@ -99,37 +99,35 @@ public class InstructionMessageValidatorTest {
         validator.validate(message);
     }
 
-
     @Test
-    public void shouldThrowExceptionWhenTimestampLessThanMinValue() {
+    public void shouldThrowExceptionWhenTimestampIsLessThanMinValue() {
         setException(INVALID_TIMESTAMP_MESSAGE);
 
         InstructionMessage message = createInstructionMessage(DEFAULT_TYPE, DEFAULT_CODE, DEFAULT_QUANTITY,
-                DEFAULT_UOM, DATE_TIME_LOWER_BOUND.minusNanos(1));
+                DEFAULT_UOM, DATE_TIME_LOWER_BOUND.minusSeconds(1));
         validator.validate(message);
     }
 
-
     @Test
-    public void shouldNotThrowExceptionWhenMinValidTimestamp() {
+    public void shouldNotThrowExceptionWhenTimestampIsEqualToMinValue() {
         InstructionMessage message = createInstructionMessage(DEFAULT_TYPE, DEFAULT_CODE, DEFAULT_QUANTITY,
                 DEFAULT_UOM, DATE_TIME_LOWER_BOUND);
         validator.validate(message);
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenMaxValidTimestamp() {
+    public void shouldNotThrowExceptionWhenTimestampIsEqualToMaxValue() {
         InstructionMessage message = createInstructionMessage(DEFAULT_TYPE, DEFAULT_CODE, DEFAULT_QUANTITY,
                 DEFAULT_UOM, LocalDateTime.now());
         validator.validate(message);
     }
 
     @Test
-    public void shouldThrowExceptionWhenTimestampGreaterThanMaxValue() {
+    public void shouldThrowExceptionWhenTimestampIsGreaterThanMaxValue() {
         setException(INVALID_TIMESTAMP_MESSAGE);
 
         InstructionMessage message = createInstructionMessage(DEFAULT_TYPE, DEFAULT_CODE, DEFAULT_QUANTITY,
-                DEFAULT_UOM, LocalDateTime.now().plusNanos(1));
+                DEFAULT_UOM, LocalDateTime.now().plusSeconds(1));
         validator.validate(message);
     }
 
